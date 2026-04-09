@@ -3,64 +3,61 @@ import json
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load .env file
+# Load .env file for local development
 load_dotenv()
 
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-def _get_initial_config(key, default=None):
-    """
-    Lookup configuration once at startup. 
-    This MUST be called from the main thread on Streamlit Cloud.
-    """
-    # 1. Try Streamlit Secrets
-    try:
-        import streamlit as st
-        if key in st.secrets:
-            return st.secrets[key]
-        for s_key in st.secrets.keys():
-            if s_key.lower() == key.lower():
-                return st.secrets[s_key]
-    except:
-        pass
-    
-    # 2. Try Environment Variables
-    val = os.getenv(key)
-    if val is not None:
-        return val
-            
-    return default
+# Try to load from Streamlit Secrets (Cloud)
+# Fallback to os.getenv (Local)
+try:
+    import streamlit as st
+    APIFY_API_KEY = st.secrets.get("APIFY_API_KEY")
+    GROQ_API_KEY = st.secrets.get("GROQ_API_KEY")
+    DATABASE_PATH = st.secrets.get("DATABASE_PATH")
+    SCRAPE_DAYS_BACK = st.secrets.get("SCRAPE_DAYS_BACK")
+    MAX_RESULTS_PER_CREATOR = st.secrets.get("MAX_RESULTS_PER_CREATOR")
+    MIN_VIEWS_THRESHOLD = st.secrets.get("MIN_VIEWS_THRESHOLD")
+    ENGAGEMENT_WEIGHT = st.secrets.get("ENGAGEMENT_WEIGHT")
+    CREATOR_DIVERSITY_WEIGHT = st.secrets.get("CREATOR_DIVERSITY_WEIGHT")
+    RECENCY_WEIGHT = st.secrets.get("RECENCY_WEIGHT")
+    FREQUENCY_WEIGHT = st.secrets.get("FREQUENCY_WEIGHT")
+except Exception:
+    APIFY_API_KEY = None
+    GROQ_API_KEY = None
+    DATABASE_PATH = None
+    SCRAPE_DAYS_BACK = None
+    MAX_RESULTS_PER_CREATOR = None
+    MIN_VIEWS_THRESHOLD = None
+    ENGAGEMENT_WEIGHT = None
+    CREATOR_DIVERSITY_WEIGHT = None
+    RECENCY_WEIGHT = None
+    FREQUENCY_WEIGHT = None
 
-# "Lock in" the values from the main thread at startup
-_APIFY_KEY_CACHED = _get_initial_config("APIFY_API_KEY")
-_GROQ_KEY_CACHED = _get_initial_config("GROQ_API_KEY")
-
-# Thread-safe accessors
-def get_apify_key():
-    return _APIFY_KEY_CACHED
-
-def get_groq_key():
-    return _GROQ_KEY_CACHED
-
-# Legacy support
-APIFY_API_KEY = _APIFY_KEY_CACHED
-GROQ_API_KEY = _GROQ_KEY_CACHED
-
-# Database
-DATABASE_PATH = _get_initial_config("DATABASE_PATH", str(BASE_DIR / "data" / "trends.db"))
+# Apply defaults if values are still None (from os.getenv fallback)
+APIFY_API_KEY = APIFY_API_KEY or os.getenv("APIFY_API_KEY")
+GROQ_API_KEY = GROQ_API_KEY or os.getenv("GROQ_API_KEY")
+DATABASE_PATH = DATABASE_PATH or os.getenv("DATABASE_PATH", str(BASE_DIR / "data" / "trends.db"))
 LOG_PATH = str(BASE_DIR / "data" / "app.log")
 
-# Scraping settings
-SCRAPE_DAYS_BACK = int(_get_initial_config("SCRAPE_DAYS_BACK", 5))
-MAX_RESULTS_PER_CREATOR = int(_get_initial_config("MAX_RESULTS_PER_CREATOR", 15))
-MIN_VIEWS_THRESHOLD = int(_get_initial_config("MIN_VIEWS_THRESHOLD", 1000))
+# Settings with defaults
+SCRAPE_DAYS_BACK = int(SCRAPE_DAYS_BACK or os.getenv("SCRAPE_DAYS_BACK", 5))
+MAX_RESULTS_PER_CREATOR = int(MAX_RESULTS_PER_CREATOR or os.getenv("MAX_RESULTS_PER_CREATOR", 15))
+MIN_VIEWS_THRESHOLD = int(MIN_VIEWS_THRESHOLD or os.getenv("MIN_VIEWS_THRESHOLD", 1000))
 
 # Scoring Weights
-ENGAGEMENT_WEIGHT = float(_get_initial_config("ENGAGEMENT_WEIGHT", 0.40))
-CREATOR_DIVERSITY_WEIGHT = float(_get_initial_config("CREATOR_DIVERSITY_WEIGHT", 0.25))
-RECENCY_WEIGHT = float(_get_initial_config("RECENCY_WEIGHT", 0.20))
-FREQUENCY_WEIGHT = float(_get_initial_config("FREQUENCY_WEIGHT", 0.15))
+ENGAGEMENT_WEIGHT = float(ENGAGEMENT_WEIGHT or os.getenv("ENGAGEMENT_WEIGHT", 0.40))
+CREATOR_DIVERSITY_WEIGHT = float(CREATOR_DIVERSITY_WEIGHT or os.getenv("CREATOR_DIVERSITY_WEIGHT", 0.25))
+RECENCY_WEIGHT = float(RECENCY_WEIGHT or os.getenv("RECENCY_WEIGHT", 0.20))
+FREQUENCY_WEIGHT = float(FREQUENCY_WEIGHT or os.getenv("FREQUENCY_WEIGHT", 0.15))
+
+# Dynamic Getters for Thread-safety
+def get_apify_key():
+    return APIFY_API_KEY
+
+def get_groq_key():
+    return GROQ_API_KEY
 
 def load_user_config():
     """Load configuration from config.json."""
