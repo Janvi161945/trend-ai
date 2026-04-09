@@ -13,6 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Fallback to os.getenv (Local)
 try:
     import streamlit as st
+    
     APIFY_API_KEY = st.secrets.get("APIFY_API_KEY")
     GROQ_API_KEY = st.secrets.get("GROQ_API_KEY")
     DATABASE_PATH = st.secrets.get("DATABASE_PATH")
@@ -23,7 +24,11 @@ try:
     CREATOR_DIVERSITY_WEIGHT = st.secrets.get("CREATOR_DIVERSITY_WEIGHT")
     RECENCY_WEIGHT = st.secrets.get("RECENCY_WEIGHT")
     FREQUENCY_WEIGHT = st.secrets.get("FREQUENCY_WEIGHT")
-except Exception:
+
+    print("✅ Loaded Streamlit secrets")
+
+except Exception as e:
+    print(f"❌ Streamlit secrets error: {e}")
     APIFY_API_KEY = None
     GROQ_API_KEY = None
     DATABASE_PATH = None
@@ -38,6 +43,10 @@ except Exception:
 # Apply defaults if values are still None (from os.getenv fallback)
 APIFY_API_KEY = APIFY_API_KEY or os.getenv("APIFY_API_KEY")
 GROQ_API_KEY = GROQ_API_KEY or os.getenv("GROQ_API_KEY")
+
+print("APIFY KEY PRESENT:", bool(APIFY_API_KEY))
+print("GROQ KEY PRESENT:", bool(GROQ_API_KEY))
+
 DATABASE_PATH = DATABASE_PATH or os.getenv("DATABASE_PATH", str(BASE_DIR / "data" / "trends.db"))
 LOG_PATH = str(BASE_DIR / "data" / "app.log")
 
