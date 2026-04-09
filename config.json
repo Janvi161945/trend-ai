@@ -1,0 +1,180 @@
+{
+  "_comment": "Optimized for 30 creators with $5/month budget (weekly runs)",
+  "creators": [
+    {
+      "username": "ca_rachanaranade",
+      "display_name": "CA Rachana Ranade",
+      "is_active": true
+    },
+    {
+      "username": "financewithsharan",
+      "display_name": "Finance with Sharan",
+      "is_active": false
+    },
+    {
+      "username": "invest_aaj_for_kal",
+      "display_name": "Invest Aaj For Kal",
+      "is_active": false
+    },
+    {
+      "username": "pranjalkamra",
+      "display_name": "Pranjal Kamra",
+      "is_active": false
+    },
+    {
+      "username": "ankurwarikoo",
+      "display_name": "Ankur Warikoo",
+      "is_active": true
+    },
+    {
+      "username": "ca.sakchijain",
+      "display_name": "CA Sakshi Jain",
+      "is_active": true
+    },
+    {
+      "username": "casarthakahuja",
+      "display_name": "CA Sarthak Ahuja",
+      "is_active": true
+    },
+    {
+      "username": "shankarnarayanan_official",
+      "display_name": "Shankar Nath",
+      "is_active": true
+    },
+    {
+      "username": "shashank.udupa",
+      "display_name": "Shashank Udupa",
+      "is_active": false
+    },
+    {
+      "username": "wint.wealth",
+      "display_name": "Wint Wealth",
+      "is_active": false
+    },
+    {
+      "username": "zerodha",
+      "display_name": "Zerodha",
+      "is_active": false
+    },
+    {
+      "username": "groww_official",
+      "display_name": "Groww",
+      "is_active": false
+    },
+    {
+      "username": "marketfeed",
+      "display_name": "Market Feed",
+      "is_active": false
+    },
+    {
+      "username": "assetyogi",
+      "display_name": "Asset Yogi",
+      "is_active": false
+    },
+    {
+      "username": "ca_neeraj_arora",
+      "display_name": "CA Neeraj Arora",
+      "is_active": false
+    },
+    {
+      "username": "labourlawadvisor",
+      "display_name": "Labour Law Advisor",
+      "is_active": true
+    },
+    {
+      "username": "sahil_bloom",
+      "display_name": "Sahil Bloom",
+      "is_active": false
+    },
+    {
+      "username": "personalfinanceclub",
+      "display_name": "Personal Finance Club",
+      "is_active": false
+    },
+    {
+      "username": "theindiantrader",
+      "display_name": "The Indian Trader",
+      "is_active": false
+    },
+    {
+      "username": "wealthyfacts",
+      "display_name": "Wealthy Facts",
+      "is_active": false
+    },
+    {
+      "username": "moneycontrol",
+      "display_name": "Moneycontrol",
+      "is_active": false
+    },
+    {
+      "username": "et_markets",
+      "display_name": "ET Markets",
+      "is_active": false
+    },
+    {
+      "username": "themint",
+      "display_name": "Mint",
+      "is_active": false
+    },
+    {
+      "username": "ca_abhishek_soni",
+      "display_name": "CA Abhishek Soni",
+      "is_active": false
+    },
+    {
+      "username": "investorsbaba",
+      "display_name": "Investors Baba",
+      "is_active": false
+    },
+    {
+      "username": "tradingwithabhishek",
+      "display_name": "Trading with Abhishek",
+      "is_active": false
+    },
+    {
+      "username": "thewarikooeffect",
+      "display_name": "Warikoo Effect",
+      "is_active": false
+    }
+  ],
+  "scraping": {
+    "days_back": 7,
+    "max_results_per_creator": 8,
+    "ignore_pinned": true,
+    "min_views_threshold": 1000,
+    "min_likes_threshold": 10,
+    "_cost_notes": {
+      "week_1_full_scrape": "30 creators \u00d7 8 posts = 240 posts = $0.62",
+      "weeks_2_4_incremental": "30 creators \u00d7 ~2 new posts = 60 posts/week = $0.16",
+      "monthly_total": "$0.62 + ($0.16 \u00d7 3) = $1.10/month",
+      "budget_remaining": "$5 - $1.10 = $3.90 (good for 3.5+ months)"
+    }
+  },
+  "scoring": {
+    "top_topics_count": 5,
+    "min_reels_per_topic": 2,
+    "min_total_views_per_topic": 5000,
+    "min_avg_likes_per_topic": 50,
+    "min_creators_per_topic": 1,
+    "min_score_threshold": 20,
+    "weights": {
+      "engagement": 0.4,
+      "creator_diversity": 0.25,
+      "recency": 0.2,
+      "frequency": 0.15
+    }
+  },
+  "quality_filters": {
+    "_description": "Ensures only REELS with real engagement are analyzed",
+    "reels_only": true,
+    "min_caption_length": 10,
+    "exclude_spam_keywords": [
+      "follow",
+      "like",
+      "subscribe",
+      "dm me",
+      "link in bio"
+    ],
+    "normalize_topics": true
+  }
+}

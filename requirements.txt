@@ -1,0 +1,8 @@
+streamlit
+apify-client
+groq
+instaloader
+python-dotenv
+pandas
+requests
+pytest
