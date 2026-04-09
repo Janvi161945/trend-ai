@@ -11,17 +11,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 def get_config_value(key, default=None):
     """
-    Get a configuration value from:
-    1. Streamlit Secrets (for Cloud deployment)
-    2. Environment Variables (for local development)
-    3. Default value
+    Highly robust configuration getter that checks:
+    1. Streamlit Secrets (Official way for Cloud)
+    2. Environment Variables (Local dev)
+    3. Case-insensitive versions
     """
-    # 1. Try Streamlit Secrets first
+    # 1. Try Streamlit Secrets
     try:
         import streamlit as st
+        # Check exact match
         if key in st.secrets:
             return st.secrets[key]
-    except (ImportError, RuntimeError):
+        # Check case-insensitive match (st.secrets is dict-like)
+        for s_key in st.secrets.keys():
+            if s_key.lower() == key.lower():
+                return st.secrets[s_key]
+    except:
         pass
     
     # 2. Try Environment Variables
@@ -29,6 +34,11 @@ def get_config_value(key, default=None):
     if val is not None:
         return val
         
+    # Check case-insensitive env vars
+    for env_key, env_val in os.environ.items():
+        if env_key.lower() == key.lower():
+            return env_val
+            
     return default
 
 # API Keys
