@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from src.config import load_user_config, SCRAPE_DAYS_BACK, MAX_RESULTS_PER_CREATOR, get_secrets_count
+from src.config import load_user_config, SCRAPE_DAYS_BACK, MAX_RESULTS_PER_CREATOR
 from src.database import get_connection, init_db, get_recent_reels_for_analysis
 from src.scrapers import apify_scraper
 from src.scrapers.cache_aware_scraper import scrape_creator_incremental, estimate_cost_savings
@@ -28,8 +28,7 @@ def refresh_trends():
         return
 
     clear_logs()
-    s_count = get_secrets_count()
-    log_event(f"Starting Trend Discovery ({s_count} secrets found in system)")
+    log_event(f"Starting Trend Discovery...")
 
     # Show cost estimate
     cost_info = estimate_cost_savings(len(creators), avg_posts_per_week=2)
