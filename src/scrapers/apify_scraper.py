@@ -1,15 +1,17 @@
 from apify_client import ApifyClient
-from src.config import APIFY_API_KEY, MAX_RESULTS_PER_CREATOR
+from src.config import get_apify_key, MAX_RESULTS_PER_CREATOR
 from datetime import datetime, timedelta
 
 def get_posts(username, results_limit=MAX_RESULTS_PER_CREATOR, results_type="posts"):
     """
     Fetch posts from Instagram profile using Apify's instagram-scraper.
     """
-    if not APIFY_API_KEY:
+    api_key = get_apify_key()
+    
+    if not api_key:
         raise ValueError("APIFY_API_KEY is not set.")
 
-    client = ApifyClient(APIFY_API_KEY)
+    client = ApifyClient(api_key)
 
     # Use apify/instagram-scraper as per requirements
     actor_id = 'apify/instagram-scraper'

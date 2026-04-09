@@ -19,10 +19,11 @@ def get_config_value(key, default=None):
     # 1. Try Streamlit Secrets
     try:
         import streamlit as st
-        # Check exact match
+        # st.secrets behaves like a nested dict. Check top level first.
         if key in st.secrets:
             return st.secrets[key]
-        # Check case-insensitive match (st.secrets is dict-like)
+        
+        # Check all keys case-insensitively
         for s_key in st.secrets.keys():
             if s_key.lower() == key.lower():
                 return st.secrets[s_key]
@@ -41,13 +42,19 @@ def get_config_value(key, default=None):
             
     return default
 
-# API Keys
+def get_apify_key():
+    return get_config_value("APIFY_API_KEY")
+
+def get_groq_key():
+    return get_config_value("GROQ_API_KEY")
+
+# For static assignments (legacy support)
 APIFY_API_KEY = get_config_value("APIFY_API_KEY")
 GROQ_API_KEY = get_config_value("GROQ_API_KEY")
 
 # Database
 DATABASE_PATH = get_config_value("DATABASE_PATH", str(BASE_DIR / "data" / "trends.db"))
-LOG_PATH = BASE_DIR / "data" / "app.log"
+LOG_PATH = str(BASE_DIR / "data" / "app.log")
 
 # Scraping settings
 SCRAPE_DAYS_BACK = int(get_config_value("SCRAPE_DAYS_BACK", 5))

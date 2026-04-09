@@ -1,5 +1,5 @@
 from groq import Groq
-from src.config import GROQ_API_KEY
+from src.config import get_groq_key
 import json
 
 
@@ -33,10 +33,11 @@ def generate_reel_ideas(captions_list):
     - "Finance tips"
     - "Investment advice"
     """
-    if not GROQ_API_KEY:
+    api_key = get_groq_key()
+    if not api_key:
         raise ValueError("GROQ_API_KEY is not set.")
 
-    client = Groq(api_key=GROQ_API_KEY)
+    client = Groq(api_key=api_key)
 
     # Format captions for prompt
     captions_formatted = "\n".join([f"{i+1}. {cap[:200]}" for i, cap in enumerate(captions_list[:50])])
