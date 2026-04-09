@@ -19,11 +19,10 @@ def get_config_value(key, default=None):
     # 1. Try Streamlit Secrets
     try:
         import streamlit as st
-        # st.secrets behaves like a nested dict. Check top level first.
+        # Check exact match
         if key in st.secrets:
             return st.secrets[key]
-        
-        # Check all keys case-insensitively
+        # Check case-insensitive match (st.secrets is dict-like)
         for s_key in st.secrets.keys():
             if s_key.lower() == key.lower():
                 return st.secrets[s_key]
@@ -42,13 +41,21 @@ def get_config_value(key, default=None):
             
     return default
 
+def get_secrets_count():
+    """Return how many secrets were found for debugging."""
+    try:
+        import streamlit as st
+        return len(st.secrets.keys())
+    except:
+        return 0
+
 def get_apify_key():
     return get_config_value("APIFY_API_KEY")
 
 def get_groq_key():
     return get_config_value("GROQ_API_KEY")
 
-# For static assignments (legacy support)
+# API Keys
 APIFY_API_KEY = get_config_value("APIFY_API_KEY")
 GROQ_API_KEY = get_config_value("GROQ_API_KEY")
 

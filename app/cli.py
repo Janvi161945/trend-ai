@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from src.config import load_user_config, SCRAPE_DAYS_BACK, MAX_RESULTS_PER_CREATOR
+from src.config import load_user_config, SCRAPE_DAYS_BACK, MAX_RESULTS_PER_CREATOR, get_secrets_count
 from src.database import get_connection, init_db, get_recent_reels_for_analysis
 from src.scrapers import apify_scraper
 from src.scrapers.cache_aware_scraper import scrape_creator_incremental, estimate_cost_savings
@@ -28,7 +28,8 @@ def refresh_trends():
         return
 
     clear_logs()
-    log_event(f"Starting Trend Discovery for {len(creators)} creators")
+    s_count = get_secrets_count()
+    log_event(f"Starting Trend Discovery ({s_count} secrets found in system)")
 
     # Show cost estimate
     cost_info = estimate_cost_savings(len(creators), avg_posts_per_week=2)
@@ -140,12 +141,10 @@ def refresh_trends():
     print(f"{'='*60}\n")
 
     all_reels = get_recent_reels_for_analysis(days_back=7)
-    print(f"📊 Analyzing {len(all_reels)} reels from last 7 days")
-
-    # 4. Topic Extraction
-    print(f"🔍 Extracting topics...")
+    
+    log_event(f"Analyzing {len(all_reels)} reels for topics...")
     topic_map = topic_extractor.cluster_topics(all_reels)
-    print(f"Found {len(topic_map.keys())} unique topics.")
+    log_event(f"Found {len(topic_map.keys())} unique topics.")
     
     # Save topics to DB
     for topic_name, reels in topic_map.items():
@@ -186,10 +185,6 @@ def refresh_trends():
 
     if not top_trends:
         print("❌ No trending topics found.")
-        print("   This might be because:")
-        print("   - Not enough reels collected yet (run again in a few days)")
-        print("   - Quality thresholds too strict")
-        print("   - Need more active creators in config")
         return
 
     for i, trend in enumerate(top_trends[:5], 1):  # Show top 5
@@ -198,24 +193,10 @@ def refresh_trends():
         print(f"   👥 {trend['creator_count']} creators | 🎬 {trend['post_count']} reels")
         print(f"   💬 {int(trend['avg_likes']):,} avg likes | 👁️ {int(trend['avg_views']):,} avg views")
 
-        # Add insights
-        from src.scoring.trend_ranker import get_topic_insights
-        insights = get_topic_insights(trend)
-        if insights:
-            print(f"   💡 Insights:")
-            for insight in insights[:3]:  # Max 3 insights per topic
-                print(f"      • {insight}")
-
-        print("-" * 60)
-
     print(f"\n💡 RECOMMENDATION:")
     if top_trends:
         best_topic = top_trends[0]
         print(f"   Create a reel about '{best_topic['topic']}'")
-        print(f"   This topic has the highest score ({best_topic['score']:.1f}/100)")
-        if best_topic['creator_count'] >= 2:
-            print(f"   Multiple creators ({best_topic['creator_count']}) are already getting traction")
-        print(f"   Expected engagement: ~{int(best_topic['avg_likes']):,} likes")
     print()
 
 def list_creators():
